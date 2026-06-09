@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía de Estudio — Desarrollo de Software 2026</title>
+<style>
+  :root {
+    --primary: #1a2744;
+    --accent: #3d6fd4;
+    --accent2: #1ea97c;
+    --accent3: #e05c2a;
+    --bg: #f7f8fc;
+    --card: #ffffff;
+    --text: #1a1f2e;
+    --muted: #5a6478;
+    --border: #e2e6f0;
+    --correct: #d4edda;
+    --correct-text: #155724;
+    --wrong: #f8d7da;
+    --wrong-text: #721c24;
+    --warning: #fff3cd;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .header {
+    background: var(--primary);
+    color: white;
+    padding: 2rem 2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  }
+  .header h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
+  .header p { font-size: 0.85rem; opacity: 0.72; margin-top: 2px; }
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    background: rgba(255,255,255,0.12);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { background: rgba(255,255,255,0.22); }
+  .tab-btn.active { background: white; color: var(--primary); border-color: white; }
+  .main { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* RESUMEN */
+  .clase-card {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+  }
+  .clase-header {
+    padding: 1rem 1.25rem 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    user-select: none;
+  }
+  .clase-header:hover { background: #f0f4ff; }
+  .clase-numero {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem;
+    flex-shrink: 0;
+    color: white;
+  }
+  .clase-titulo { font-weight: 600; font-size: 1rem; flex: 1; }
+  .clase-sub { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+  .chevron { font-size: 1.1rem; color: var(--muted); transition: transform 0.2s; }
+  .clase-body { padding: 0 1.25rem 1.25rem; display: none; }
+  .clase-body.open { display: block; }
+  .chevron.open { transform: rotate(180deg); }
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 2px;
+  }
+  .tag-blue { background: #dbeafe; color: #1e40af; }
+  .tag-green { background: #dcfce7; color: #166534; }
+  .tag-orange { background: #ffedd5; color: #9a3412; }
+  .tag-purple { background: #ede9fe; color: #5b21b6; }
+  .tag-teal { background: #ccfbf1; color: #134e4a; }
+  .concept-box {
+    background: #f8faff;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    font-size: 0.92rem;
+  }
+  .concept-box strong { color: var(--accent); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0.75rem 0; }
+  @media(max-width:600px) { .two-col { grid-template-columns: 1fr; } }
+  .mini-card {
+    background: #f8faff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.88rem;
+  }
+  .mini-card h4 { font-size: 0.88rem; color: var(--accent); margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 0.75rem 0; }
+  th { background: var(--primary); color: white; padding: 8px 10px; text-align: left; font-size: 0.82rem; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: #f7f8fc; }
+  h3 { font-size: 0.95rem; color: var(--primary); margin: 1rem 0 0.5rem; font-weight: 600; }
+
+  /* PREGUNTAS DEL EXAMEN */
+  .exam-q {
+    background: var(--card);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .q-text { font-weight: 600; font-size: 0.98rem; margin-bottom: 0.75rem; }
+  .answer-box {
+    background: #eef4ff;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    display: none;
+  }
+  .answer-box.visible { display: block; }
+  .show-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .show-btn:hover { opacity: 0.85; }
+
+  /* MODELOS DE PARCIAL */
+  .parcial-selector {
+    display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap;
+  }
+  .parcial-btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.88rem;
+    transition: all 0.18s;
+  }
+  .parcial-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .parcial { display: none; }
+  .parcial.active { display: block; }
+  .parcial-header {
+    background: var(--primary);
+    color: white;
+    border-radius: 10px 10px 0 0;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 0;
+  }
+  .parcial-header h2 { font-size: 1.1rem; }
+  .parcial-header p { font-size: 0.82rem; opacity: 0.75; margin-top: 4px; }
+  .parcial-body {
+    background: white;
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 1.5rem;
+  }
+  .q-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: white;
+    background: var(--muted);
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin: 1.25rem 0 0.75rem;
+  }
+  .q-section-title:first-child { margin-top: 0; }
+  .parcial-q {
+    margin-bottom: 1.1rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px dashed var(--border);
+  }
+  .parcial-q:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .parcial-q .q-label { font-weight: 600; font-size: 0.95rem; margin-bottom: 6px; }
+  .option { 
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 6px 10px; margin: 4px 0;
+    border: 1.5px solid var(--border); border-radius: 6px;
+    cursor: pointer; font-size: 0.9rem;
+    transition: all 0.15s;
+    background: white;
+  }
+  .option:hover { border-color: var(--accent); background: #f0f4ff; }
+  .option.selected { border-color: var(--accent); background: #e8f0fe; }
+  .option.correct { border-color: #28a745; background: var(--correct); color: var(--correct-text); }
+  .option.wrong { border-color: #dc3545; background: var(--wrong); color: var(--wrong-text); }
+  .option-letter { font-weight: 700; min-width: 20px; }
+  .tf-options { display: flex; gap: 8px; margin-top: 6px; }
+  .tf-btn {
+    padding: 7px 22px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.15s;
+  }
+  .tf-btn:hover { border-color: var(--accent); background: #f0f4ff; }
+  .tf-btn.selected-true { border-color: var(--accent2); background: #d1fae5; color: #065f46; }
+  .tf-btn.selected-false { border-color: var(--accent3); background: #fee2e2; color: #991b1b; }
+  .tf-btn.correct { border-color: #28a745; background: var(--correct); color: var(--correct-text); }
+  .tf-btn.wrong { border-color: #dc3545; background: var(--wrong); color: var(--wrong-text); }
+  .feedback { font-size: 0.83rem; margin-top: 6px; padding: 6px 10px; border-radius: 6px; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--correct); color: var(--correct-text); }
+  .feedback.err { background: var(--wrong); color: var(--wrong-text); }
+  .blank-input {
+    border: none;
+    border-bottom: 2px solid var(--accent);
+    padding: 2px 6px;
+    font-size: 0.95rem;
+    background: transparent;
+    min-width: 160px;
+    outline: none;
+  }
+  .check-btn {
+    margin-top: 1.25rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: opacity 0.18s;
+    display: block;
+  }
+  .check-btn:hover { opacity: 0.85; }
+  .score-box {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: center;
+  }
+  .score-box.show { display: block; }
+  .score-high { background: #d4edda; color: #155724; }
+  .score-mid { background: #fff3cd; color: #856404; }
+  .score-low { background: #f8d7da; color: #721c24; }
+  .reset-btn {
+    margin-top: 8px;
+    background: transparent;
+    border: 1.5px solid var(--muted);
+    color: var(--muted);
+    padding: 7px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+  }
+  .reset-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .tip { background: var(--warning); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.87rem; margin: 0.75rem 0; }
+  ul li { margin-bottom: 4px; margin-left: 1.2rem; }
+  p { margin-bottom: 0.5rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📚 Desarrollo de Software 2026 — Guía de Estudio</h1>
+  <p>Resumen de todas las clases · Respuestas al examen · Modelos de parcial interactivos</p>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('resumen')">Resumen por clase</button>
+    <button class="tab-btn" onclick="showTab('examen')">Preguntas del examen</button>
+    <button class="tab-btn" onclick="showTab('parcial')">Modelos de parcial</button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ===== SECCIÓN RESUMEN ===== -->
+<div id="sec-resumen" class="section active">
+
+  <!-- CLASE I -->
+  <div class="clase-card">
+    <div class="clase-header" onclick="toggleClase(this)">
+      <div class="clase-numero" style="background:#3d6fd4">1</div>
+      <div style="flex:1">
+        <div class="clase-titulo">Ingeniería de Software</div>
+        <div class="clase-sub">Qué es el software · SDLC · Modelos de proceso · Roles</div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="clase-body">
+      <div class="concept-box">
+        <strong>Software</strong>: conjunto de programas, datos e instrucciones que permiten a una computadora realizar tareas. Es intangible y puede copiarse, distribuirse y modificarse.
+      </div>
+      <h3>Características de un BUEN software</h3>
+      <div class="two-col">
+        <div class="mini-card"><h4>Funcionalidad</h4>Realiza las tareas para las que fue diseñado.</div>
+        <div class="mini-card"><h4>Confiabilidad</h4>Funciona correctamente bajo condiciones normales.</div>
+        <div class="mini-card"><h4>Eficiencia</h4>Usa recursos de forma óptima.</div>
+        <div class="mini-card"><h4>Mantenibilidad</h4>Puede ser modificado y mejorado fácilmente.</div>
+        <div class="mini-card"><h4>Usabilidad</h4>Es simple, intuitivo y fácil de entender.</div>
+      </div>
+      <h3>SDLC — Ciclo de vida del software</h3>
+      <p>Proceso estructurado con 6 fases: <strong>Requerimientos → Diseño → Implementación → Pruebas → Despliegue → Mantenimiento.</strong></p>
+      <div class="tip">⚠️ "Sistemas legacy" NO es una fase del SDLC. Las fases son las 6 mencionadas.</div>
+      <h3>Modelos de proceso</h3>
+      <table>
+        <tr><th>Modelo</th><th>Descripción</th><th>Cuándo usar</th></tr>
+        <tr><td><strong>Cascada</strong></td><td>Lineal y secuencial. Cada fase debe completarse antes de pasar a la siguiente.</td><td>Requerimientos estables y bien definidos.</td></tr>
+        <tr><td><strong>Iterativo/Incremental</strong></td><td>Ciclos cortos que agregan funcionalidad gradualmente.</td><td>Proyectos con cambios frecuentes.</td></tr>
+        <tr><td><strong>Espiral</strong></td><td>Combina cascada con prototipos y análisis de riesgo.</td><td>Proyectos grandes y complejos.</td></tr>
+        <tr><td><strong>Prototipado</strong></td><td>Implementación parcial rápida para validar requerimientos.</td><td>Requerimientos cambiantes o poco claros.</td></tr>
+        <tr><td><strong>Ágil</strong></td><td>Iterativo, colaborativo, entregas continuas de valor.</td><td>Software con evolución continua.</td></tr>
+      </table>
+      <h3>Roles en un equipo de desarrollo</h3>
+      <p><span class="tag tag-blue">Product Owner</span> <span class="tag tag-green">Project Manager</span> <span class="tag tag-orange">Analista Funcional</span> <span class="tag tag-purple">Desarrollador (Dev)</span> <span class="tag tag-teal">QA Tester</span> <span class="tag tag-blue">DevOps</span></p>
+    </div>
+  </div>
+
+  <!-- CLASE II -->
+  <div class="clase-card">
+    <div class="clase-header" onclick="toggleClase(this)">
+      <div class="clase-numero" style="background:#1ea97c">2</div>
+      <div style="flex:1">
+        <div class="clase-titulo">Metodologías Ágiles</div>
+        <div class="clase-sub">Manifiesto Ágil · Scrum · Kanban · XP · Ágil vs Cascada</div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="clase-body">
+      <h3>Manifiesto Ágil (2001) — 4 valores</h3>
+      <table>
+        <tr><th>Se valora MÁS</th><th>Por encima de</th></tr>
+        <tr><td>Individuos e interacciones</td><td>Procesos y herramientas</td></tr>
+        <tr><td>Software funcionando</td><td>Documentación exhaustiva</td></tr>
+        <tr><td>Colaboración con el cliente</td><td>Negociación de contratos</td></tr>
+        <tr><td>Respuesta al cambio</td><td>Seguir un plan</td></tr>
+      </table>
+      <h3>LEAN — se centra en</h3>
+      <p>Eliminar el desperdicio (waste), entregar valor al cliente lo antes posible, aprender rápido y mejorar continuamente el flujo de trabajo.</p>
+      <h3>XP (Extreme Programming) — se centra en</h3>
+      <p>Calidad técnica del código: <strong>Pair Programming</strong>, <strong>TDD</strong> (escribir el test antes del código), <strong>Refactoring continuo</strong>, <strong>Integración continua</strong> y <strong>releases pequeños y frecuentes</strong>.</p>
+      <h3>Scrum</h3>
+      <div class="two-col">
+        <div class="mini-card"><h4>Roles</h4><ul><li>Product Owner</li><li>Scrum Master</li><li>Dev Team</li></ul></div>
+        <div class="mini-card"><h4>Ceremonias</h4><ul><li>Sprint Planning</li><li>Daily Standup (15 min)</li><li>Sprint Review</li><li>Retrospectiva</li></ul></div>
+      </div>
+      <h3>Kanban</h3>
+      <p>Tablero visual: <strong>Pendiente → En Progreso → Hecho</strong>. Limita el WIP. Flujo continuo sin sprints. Ideal para soporte y mantenimiento.</p>
+    </div>
+  </div>
+
+  <!-- CLASE III -->
+  <div class="clase-card">
+    <div class="clase-header" onclick="toggleClase(this)">
+      <div class="clase-numero" style="background:#9333ea">3</div>
+      <div style="flex:1">
+        <div class="clase-titulo">Gestión de Requerimientos</div>
+        <div class="clase-sub">Funcionales · No funcionales · Historias de usuario · Técnicas de relevamiento</div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="clase-body">
+      <div class="concept-box"><strong>Requerimiento</strong>: describe lo que un sistema debe hacer (funcional) o cómo debe comportarse (no funcional).</div>
+      <table>
+        <tr><th>Tipo</th><th>Descripción</th><th>Ejemplo</th></tr>
+        <tr><td><strong>Funcional</strong></td><td>Funciones específicas del sistema</td><td>"El usuario puede registrarse con email y contraseña"</td></tr>
+        <tr><td><strong>No Funcional</strong></td><td>Atributos de calidad: rendimiento, seguridad, usabilidad, escalabilidad</td><td>"El sistema debe responder en menos de 2 segundos"</td></tr>
+        <tr><td><strong>De Negocio</strong></td><td>Objetivo de alto nivel de la organización</td><td>"Aumentar las ventas un 10%"</td></tr>
+        <tr><td><strong>De Usuario</strong></td><td>Tareas que el usuario debe poder realizar</td><td>Historias de usuario</td></tr>
+      </table>
+      <h3>Ejemplos de Requerimientos NO Funcionales</h3>
+      <p><span class="tag tag-orange">Rendimiento</span> <span class="tag tag-blue">Seguridad</span> <span class="tag tag-purple">Usabilidad</span> <span class="tag tag-green">Escalabilidad</span> <span class="tag tag-teal">Disponibilidad (uptime)</span> <span class="tag tag-orange">Portabilidad</span> <span class="tag tag-blue">Compatibilidad</span></p>
+      <h3>Historias de usuario — Template</h3>
+      <div class="concept-box">Como <strong>[tipo de usuario]</strong>, quiero <strong>[acción/funcionalidad]</strong>, para <strong>[beneficio/objetivo]</strong>.</div>
+      <h3>Técnicas de relevamiento</h3>
+      <p>Entrevistas · Workshops/Talleres · Observación · Prototipado · Cuestionarios · Análisis de documentos.</p>
+    </div>
+  </div>
+
+  <!-- CLASE IV -->
+  <div class="clase-card">
+    <div class="clase-header" onclick="toggleClase(this)">
+      <div class="clase-numero" style="background:#e05c2a">4</div>
+      <div style="flex:1">
+        <div class="clase-titulo">Fundamentos de la Programación</div>
+        <div class="clase-sub">Variables · Tipos de datos · Paradigmas de programación</div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="clase-body">
+      <div class="concept-box"><strong>Paradigma de programación</strong>: forma de organizar y estructurar el código. No es un lenguaje, sino un enfoque o estilo.</div>
+      <table>
+        <tr><th>Paradigma</th><th>Descripción</th><th>Ejemplos</th></tr>
+        <tr><td><strong>Imperativo/Procedural</strong></td><td>Se indica CÓMO hacer algo, paso a paso.</td><td>C, Pascal</td></tr>
+        <tr><td><strong>Orientado a Objetos (OOP)</strong></td><td>Modela el mundo como objetos con atributos y comportamientos. Encapsulamiento, herencia, polimorfismo.</td><td>Java, Python, C#</td></tr>
+        <tr><td><strong>Funcional</strong></td><td>Trata el cómputo como funciones matemáticas. Sin efectos secundarios, inmutabilidad.</td><td>Haskell, Elixir, partes de JS</td></tr>
+        <tr><td><strong>Declarativo</strong></td><td>Se indica QUÉ se quiere lograr, no cómo.</td><td>SQL</td></tr>
+      </table>
+      <div class="tip">💡 <strong>Sí se pueden usar múltiples paradigmas en un software</strong>. Python, por ejemplo, soporta OOP y funcional. Muchos proyectos reales combinan estilos según la necesidad.</div>
+      <h3>POO — Características principales</h3>
+      <p><span class="tag tag-blue">Encapsulamiento</span> <span class="tag tag-green">Abstracción</span> <span class="tag tag-purple">Herencia</span> <span class="tag tag-orange">Polimorfismo</span></p>
+    </div>
+  </div>
+
+  <!-- CLASE V -->
+  <div class="clase-card">
+    <div class="clase-header" onclick="toggleClase(this)">
+      <div class="clase-numero" style="background:#0891b2">5</div>
+      <div style="flex:1">
+        <div class="clase-titulo">Paradigmas de Diseño</div>
+        <div class="clase-sub">Principios SOLID · Patrones de diseño · Cohesión y acoplamiento</div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="clase-body">
+      <h3>Principios SOLID</h3>
+      <table>
+        <tr><th>Letra</th><th>Principio</th><th>En resumen</th></tr>
+        <tr><td><strong>S</strong></td><td>Single Responsibility</td><td>Una clase, una sola razón para cambiar.</td></tr>
+        <tr><td><strong>O</strong></td><td>Open/Closed</td><td>Abierto para extensión, cerrado para modificación.</td></tr>
+        <tr><td><strong>L</strong></td><td>Liskov Substitution</td><td>Las subclases deben poder reemplazar a su clase base sin romper nada.</td></tr>
+        <tr><td><strong>I</strong></td><td>Interface Segregation</td><td>Interfaces específicas mejor que una grande.</td></tr>
+        <tr><td><strong>D</strong></td><td>Dependency Inversion</td><td>Depender de abstracciones, no de implementaciones concretas.</td></tr>
+      </table>
+      <h3>Cohesión y Acoplamiento</h3>
+      <div class="two-col">
+        <div class="mini-card"><h4>Cohesión (alta = bueno)</h4>Grado en que los elementos de un módulo están relacionados entre sí. Alta cohesión = el módulo hace UNA cosa bien.</div>
+        <div class="mini-card"><h4>Acoplamiento (bajo = bueno)</h4>Grado de dependencia entre módulos. Bajo acoplamiento = cambios en uno no afectan a otros.</div>
+      </div>
+      <h3>Patrones de diseño</h3>
+      <table>
+        <tr><th>Tipo</th><th>Ejemplos</th><th>Para qué sirven</th></tr>
+        <tr><td><strong>Creacionales</strong></td><td>Singleton, Factory, Builder, Prototype</td><td>Cómo se crean los objetos</td></tr>
+        <tr><td><strong>Estructurales</strong></td><td>Adapter, Decorator, Facade, Composite</td><td>Cómo se organizan las clases</td></tr>
+        <tr><td><strong>Comportamiento</strong></td><td>Observer, Strategy, Command, Iterator</td><td>Cómo se comunican los objetos</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- CLASE VI -->
+  <div class="clase-card">
+    <div class="clase-header" onclick="toggleClase(this)">
+      <div class="clase-numero" style="background:#dc2626">6</div>
+      <div style="flex:1">
+        <div class="clase-titulo">Pruebas de Software</div>
+        <div class="clase-sub">QA vs QC · Tipos de pruebas · Caja Blanca vs Negra · TDD · Métricas</div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="clase-body">
+      <table>
+        <tr><th>QA (Quality Assurance)</th><th>QC (Quality Control)</th></tr>
+        <tr><td>Prevención de defectos</td><td>Detección de defectos</td></tr>
+        <tr><td>Actúa desde el inicio del proyecto</td><td>Actúa al terminar el producto</td></tr>
+        <tr><td>Define estándares y parámetros</td><td>Controla el comportamiento del producto final</td></tr>
+        <tr><td>Orientado al proceso</td><td>Orientado al producto</td></tr>
+      </table>
+      <h3>Caja Blanca vs Caja Negra</h3>
+      <div class="two-col">
+        <div class="mini-card"><h4>Caja Negra (Black-Box)</h4>Se centra en entradas y salidas. No se conoce el código interno. Solo se valida el comportamiento desde la perspectiva del usuario.</div>
+        <div class="mini-card"><h4>Caja Blanca (White-Box)</h4>Requiere conocer el código fuente. Se analiza el flujo de datos y estructuras lógicas. Común en pruebas unitarias.</div>
+      </div>
+      <p><strong>Caja Gris (Gray-Box):</strong> Acceso limitado a la arquitectura. Enfoque híbrido.</p>
+      <h3>TDD — Test Driven Development</h3>
+      <div class="concept-box">Enfoque donde <strong>se escribe el test ANTES de escribir el código</strong>.<br>
+      Ciclo: 🔴 RED (test falla) → 🟢 GREEN (código mínimo para pasar) → 🔵 REFACTOR (mejorar)</div>
+      <p><strong>Ventajas:</strong> cobertura garantizada, mejor diseño, detecta casos borde.<br>
+      <strong>Desventajas:</strong> lento al inicio, difícil en sistemas legacy.</p>
+    </div>
+  </div>
+
+  <!-- CLASE VII -->
+  <div class="clase-card">
+    <div class="clase-header" onclick="toggleClase(this)">
+      <div class="clase-numero" style="background:#7c3aed">7</div>
+      <div style="flex:1">
+        <div class="clase-titulo">Gestión de Proyectos</div>
+        <div class="clase-sub">Planeación · COCOMO · Gestión de riesgos · KPIs · OKRs</div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="clase-body">
+      <h3>COCOMO — Estimación de costos</h3>
+      <div class="concept-box">
+        <strong>MM = a × KLOC^b</strong> (Esfuerzo en meses-persona)<br>
+        <strong>TD = c × MM^d</strong> (Tiempo de desarrollo en meses)<br>
+        KLOC = Miles de líneas de código
+      </div>
+      <h3>Métricas: KPIs vs OKRs</h3>
+      <div class="two-col">
+        <div class="mini-card"><h4>KPIs (Key Performance Indicators)</h4>Indicadores que miden el rendimiento actual de un proceso o proyecto. Son cuantificables. Ej: velocidad del equipo, % de bugs.</div>
+        <div class="mini-card"><h4>OKRs (Objectives & Key Results)</h4>Marco que combina un objetivo cualitativo con resultados clave medibles para alcanzarlo. Más estratégico y orientado a metas.</div>
+      </div>
+      <div class="tip">💡 <strong>OKRs definen objetivos y cómo medirlos. KPIs hacen seguimiento del rendimiento de esos objetivos.</strong></div>
+      <h3>Gestión de riesgos — 4 pasos</h3>
+      <p><strong>1. Identificación</strong> → <strong>2. Análisis</strong> (probabilidad e impacto) → <strong>3. Planeación</strong> (mitigación) → <strong>4. Monitorización</strong> (seguimiento continuo)</p>
+      <h3>Tipos de riesgo</h3>
+      <p><span class="tag tag-orange">Tecnológico</span> <span class="tag tag-blue">Personal</span> <span class="tag tag-purple">Organización</span> <span class="tag tag-green">Herramientas</span> <span class="tag tag-teal">Requerimientos</span> <span class="tag tag-orange">Estimación</span></p>
+    </div>
+  </div>
+
+  <!-- CLASE UML -->
+  <div class="clase-card">
+    <div class="clase-header" onclick="toggleClase(this)">
+      <div class="clase-numero" style="background:#0f766e">UML</div>
+      <div style="flex:1">
+        <div class="clase-titulo">UML — Lenguaje de Modelado Unificado</div>
+        <div class="clase-sub">Diagrama de clases · Casos de uso · Máquina de estados</div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="clase-body">
+      <div class="concept-box"><strong>UML</strong> es un lenguaje visual de modelado usado para especificar, construir y documentar artefactos de un sistema de software. NO es un lenguaje de programación; es un lenguaje de modelado.</div>
+      <h3>Para qué sirve UML</h3>
+      <ul>
+        <li>Capturar y validar requerimientos con todas las partes interesadas.</li>
+        <li>Explorar arquitecturas antes de escribir código.</li>
+        <li>Documentar decisiones de diseño.</li>
+        <li>Comunicar la estructura del sistema al equipo.</li>
+      </ul>
+      <h3>Tipos de diagramas UML</h3>
+      <table>
+        <tr><th>Diagrama</th><th>Para qué sirve</th></tr>
+        <tr><td><strong>Clases</strong></td><td>Muestra clases, atributos, métodos y relaciones. Base del diseño OOP.</td></tr>
+        <tr><td><strong>Casos de uso</strong></td><td>Muestra actores y las funcionalidades que el sistema ofrece.</td></tr>
+        <tr><td><strong>Máquina de estados</strong></td><td>Modela los estados posibles de un objeto y las transiciones entre ellos.</td></tr>
+        <tr><td><strong>Secuencia</strong></td><td>Muestra cómo interactúan objetos a lo largo del tiempo.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- CLASE VIII -->
+  <div class="clase-card">
+    <div class="clase-header" onclick="toggleClase(this)">
+      <div class="clase-numero" style="background:#1d4ed8">8</div>
+      <div style="flex:1">
+        <div class="clase-titulo">Arquitectura de Software</div>
+        <div class="clase-sub">Estilos arquitectónicos · Herramientas CASE · CI/CD</div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="clase-body">
+      <table>
+        <tr><th>Arquitectura</th><th>Descripción</th><th>Pros/Contras</th></tr>
+        <tr><td><strong>Monolítica</strong></td><td>Todo el sistema en un único ejecutable.</td><td>Simple de desarrollar / difícil de escalar.</td></tr>
+        <tr><td><strong>Microservicios</strong></td><td>Servicios independientes que se comunican por APIs.</td><td>Escalable y flexible / alta complejidad.</td></tr>
+        <tr><td><strong>Cliente-Servidor</strong></td><td>Cliente solicita recursos al servidor.</td><td>Modelo clásico / dependencia del servidor.</td></tr>
+        <tr><td><strong>Serverless</strong></td><td>El proveedor cloud gestiona la infra. Se paga por ejecución.</td><td>Sin gestión de servidores / vendor lock-in.</td></tr>
+        <tr><td><strong>Event-Driven</strong></td><td>Componentes que se comunican mediante eventos.</td><td>Tiempo real y reactivo / complejo de depurar.</td></tr>
+        <tr><td><strong>Hexagonal</strong></td><td>Aísla el núcleo de negocio con puertos y adaptadores.</td><td>Alta testabilidad / mayor abstracción.</td></tr>
+      </table>
+      <h3>Herramientas CASE</h3>
+      <div class="concept-box"><strong>CASE</strong> (Computer-Aided Software Engineering): herramientas que automatizan o asisten en las distintas etapas del desarrollo de software.<br>
+      Ejemplos: UMLet (modelado) · SonarQube (calidad) · Jira (gestión) · Git (versiones) · Docker (CI/CD) · Selenium (testing).</div>
+      <p><strong>Se implementan</strong> a lo largo de todo el SDLC: desde el análisis de requerimientos hasta el despliegue y mantenimiento.</p>
+    </div>
+  </div>
+
+</div><!-- fin sec-resumen -->
+
+
+<!-- ===== SECCIÓN EXAMEN ===== -->
+<div id="sec-examen" class="section">
+  <div class="tip" style="margin-bottom:1.25rem">📋 Estas son las preguntas del modelo de parcial. Hacé clic en "Ver respuesta" para ver la respuesta completa.</div>
+
+  <div class="exam-q">
+    <div class="q-num">Pregunta 1</div>
+    <div class="q-text">¿Qué es un Software y qué debe cumplir para ser un BUEN SW?</div>
+    <button class="show-btn" onclick="toggleAnswer(this)">Ver respuesta</button>
+    <div class="answer-box">
+      <p><strong>Software</strong> es el conjunto de programas, datos e instrucciones que permiten a una computadora realizar tareas. A diferencia del hardware, el software es intangible y puede copiarse, distribuirse y modificarse.</p>
+      <p>Para ser un <strong>buen software</strong> debe cumplir con:</p>
+      <ul>
+        <li><strong>Funcionalidad:</strong> realiza las tareas para las que fue diseñado.</li>
+        <li><strong>Confiabilidad:</strong> funciona correctamente bajo condiciones normales.</li>
+        <li><strong>Eficiencia:</strong> usa los recursos (CPU, memoria, etc.) de forma óptima.</li>
+        <li><strong>Mantenibilidad:</strong> puede ser modificado y mejorado fácilmente.</li>
+        <li><strong>Usabilidad:</strong> es intuitivo y fácil de usar por el usuario final.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <div class="q-num">Pregunta 2</div>
+    <div class="q-text">Verdadero o Falso: Indicar cuál NO pertenece a una fase del Ciclo de Vida de Desarrollo del SW. Justificar.</div>
+    <button class="show-btn" onclick="toggleAnswer(this)">Ver respuesta</button>
+    <div class="answer-box">
+      <p>Las opciones eran: Análisis: Gestión de Requerimientos / Diseño: Arquitectura / Implementación: Desarrollo / <strong>Sistemas legacy: Heredados</strong> / Pruebas: Testing / Mantenimiento.</p>
+      <p>La respuesta correcta es: <strong>FALSO — "Sistemas legacy: Heredados" NO es una fase del SDLC.</strong></p>
+      <p>Justificación: Las 6 fases del ciclo de vida del software son Requerimientos, Diseño, Implementación, Pruebas, Despliegue y Mantenimiento. Los "sistemas legacy" o heredados son sistemas existentes de una organización, no una fase del proceso de desarrollo. El resto de las opciones sí corresponden a fases reales del SDLC.</p>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <div class="q-num">Pregunta 3</div>
+    <div class="q-text">Defina en qué se centran LEAN y XP.</div>
+    <button class="show-btn" onclick="toggleAnswer(this)">Ver respuesta</button>
+    <div class="answer-box">
+      <p><strong>LEAN</strong> se centra en eliminar el desperdicio (waste) en todos los procesos. Su objetivo es maximizar el valor entregado al cliente minimizando actividades que no agregan valor, optimizando el flujo de trabajo y fomentando la mejora continua. Prioriza la entrega rápida y aprender de la experiencia.</p>
+      <p><strong>XP (Extreme Programming)</strong> se centra en la calidad técnica del código y la comunicación estrecha con el cliente. Sus prácticas clave son: Pair Programming (programación en pares), TDD (desarrollo guiado por tests), refactoring continuo, integración continua (CI) y releases pequeños y frecuentes. Es la metodología ágil con mayor énfasis en la excelencia técnica.</p>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <div class="q-num">Pregunta 4</div>
+    <div class="q-text">¿Qué son los requerimientos? Nombrar ejemplos de requerimientos NO Funcionales.</div>
+    <button class="show-btn" onclick="toggleAnswer(this)">Ver respuesta</button>
+    <div class="answer-box">
+      <p><strong>Los requerimientos</strong> son las necesidades y expectativas que debe cumplir un sistema de software para ser considerado exitoso. Describen lo que el sistema debe hacer (funcionales) o cómo debe comportarse (no funcionales).</p>
+      <p><strong>Ejemplos de requerimientos NO Funcionales:</strong></p>
+      <ul>
+        <li><strong>Rendimiento:</strong> "El sistema debe responder en menos de 2 segundos."</li>
+        <li><strong>Seguridad:</strong> "Los datos del usuario deben estar cifrados con AES-256."</li>
+        <li><strong>Usabilidad:</strong> "Un usuario nuevo debe poder completar el registro en menos de 3 minutos."</li>
+        <li><strong>Escalabilidad:</strong> "El sistema debe soportar 10.000 usuarios concurrentes."</li>
+        <li><strong>Disponibilidad (uptime):</strong> "El sistema debe estar disponible el 99.9% del tiempo."</li>
+        <li><strong>Portabilidad:</strong> "La aplicación debe funcionar en iOS y Android."</li>
+        <li><strong>Compatibilidad:</strong> "Debe ser compatible con navegadores Chrome, Firefox y Safari."</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <div class="q-num">Pregunta 5</div>
+    <div class="q-text">¿A qué nos referimos cuando decimos lenguaje UML? Dar ejemplos.</div>
+    <button class="show-btn" onclick="toggleAnswer(this)">Ver respuesta</button>
+    <div class="answer-box">
+      <p><strong>UML (Unified Modeling Language)</strong> es un lenguaje de modelado visual, NO un lenguaje de programación. Se usa para especificar, construir y documentar los artefactos de un sistema de software. Permite capturar decisiones y conocimiento sobre los sistemas que se construyen, comunicando la estructura y el comportamiento del sistema a todos los involucrados.</p>
+      <p><strong>Ejemplos de diagramas UML:</strong></p>
+      <ul>
+        <li><strong>Diagrama de clases:</strong> muestra las clases, sus atributos, métodos y relaciones (herencia, composición, asociación).</li>
+        <li><strong>Diagrama de casos de uso:</strong> muestra los actores (usuarios, sistemas externos) y las funcionalidades que el sistema ofrece.</li>
+        <li><strong>Diagrama de secuencia:</strong> muestra cómo interactúan los objetos en el tiempo.</li>
+        <li><strong>Diagrama de estados:</strong> modela los estados posibles de un objeto y las transiciones entre ellos.</li>
+        <li><strong>Diagrama de actividad:</strong> representa flujos de trabajo o procesos.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <div class="q-num">Pregunta 6</div>
+    <div class="q-text">Dado los conocimientos obtenidos, ¿se pueden utilizar diferentes paradigmas de programación en un software? Justificar.</div>
+    <button class="show-btn" onclick="toggleAnswer(this)">Ver respuesta</button>
+    <div class="answer-box">
+      <p><strong>Sí, es totalmente posible y muy común en el desarrollo real.</strong></p>
+      <p>Un software moderno puede combinar múltiples paradigmas de programación según las necesidades de cada parte del sistema. Esto se denomina programación multiparadigma.</p>
+      <p><strong>Justificación:</strong> Los lenguajes modernos como Python, JavaScript, Kotlin o Scala soportan múltiples paradigmas. Por ejemplo:</p>
+      <ul>
+        <li>Una aplicación puede usar <strong>OOP</strong> para modelar las entidades de negocio (clases de Usuario, Pedido, etc.).</li>
+        <li>Al mismo tiempo usar <strong>programación funcional</strong> para el procesamiento de datos (maps, filters, reducers).</li>
+        <li>Y usar <strong>SQL (declarativo)</strong> para las consultas a la base de datos.</li>
+      </ul>
+      <p>Utilizar el paradigma adecuado para cada problema mejora la legibilidad, mantenibilidad y eficiencia del código. Lo importante es la consistencia y el criterio del equipo.</p>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <div class="q-num">Pregunta 7</div>
+    <div class="q-text">¿A qué nos referimos cuando hablamos de cohesión y acoplamiento?</div>
+    <button class="show-btn" onclick="toggleAnswer(this)">Ver respuesta</button>
+    <div class="answer-box">
+      <p><strong>Cohesión</strong> se refiere al grado en que los elementos dentro de un módulo o clase están relacionados entre sí y trabajan hacia un único propósito. <strong>Alta cohesión es deseable</strong>: significa que el módulo hace una sola cosa bien hecha (principio SRP de SOLID). Un módulo con baja cohesión mezcla responsabilidades no relacionadas, lo que lo hace difícil de mantener.</p>
+      <p><strong>Acoplamiento</strong> se refiere al grado de dependencia entre módulos o clases. <strong>Bajo acoplamiento es deseable</strong>: significa que los módulos son independientes y los cambios en uno no afectan a otros. Un sistema fuertemente acoplado es frágil porque un cambio en un módulo puede romper otros.</p>
+      <p><strong>Regla de oro:</strong> buscar alta cohesión + bajo acoplamiento para lograr un sistema mantenible y flexible.</p>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <div class="q-num">Pregunta 8</div>
+    <div class="q-text">¿Qué diferencia existe entre un test de caja blanca y un test de caja negra?</div>
+    <button class="show-btn" onclick="toggleAnswer(this)">Ver respuesta</button>
+    <div class="answer-box">
+      <table>
+        <tr><th>Aspecto</th><th>Caja Negra</th><th>Caja Blanca</th></tr>
+        <tr><td>Conocimiento del código</td><td>No se conoce</td><td>Se conoce el código fuente</td></tr>
+        <tr><td>Perspectiva</td><td>Usuario final</td><td>Desarrollador/QA técnico</td></tr>
+        <tr><td>Se enfoca en</td><td>Entradas y salidas</td><td>Flujo interno, rutas de ejecución</td></tr>
+        <tr><td>Tipo de prueba común</td><td>Funcionales, sistema, UAT</td><td>Unitarias, integración</td></tr>
+        <tr><td>Detecta</td><td>Comportamientos incorrectos</td><td>Errores ocultos en la lógica</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <div class="q-num">Pregunta 9</div>
+    <div class="q-text">Diferencias entre las Métricas OKR's y los KPI's</div>
+    <button class="show-btn" onclick="toggleAnswer(this)">Ver respuesta</button>
+    <div class="answer-box">
+      <table>
+        <tr><th>Aspecto</th><th>OKRs</th><th>KPIs</th></tr>
+        <tr><td>Significado</td><td>Objectives & Key Results</td><td>Key Performance Indicators</td></tr>
+        <tr><td>Propósito</td><td>Definir objetivos y cómo alcanzarlos</td><td>Medir el rendimiento actual de un proceso</td></tr>
+        <tr><td>Orientación</td><td>Estratégico y aspiracional</td><td>Operativo y de seguimiento</td></tr>
+        <tr><td>Ejemplo</td><td>Objetivo: ser líder del mercado. KR: sumar 1000 clientes en Q3.</td><td>Velocidad del equipo, % de bugs, tiempo de respuesta.</td></tr>
+        <tr><td>Relación</td><td>Los KPIs pueden ser los Key Results de un OKR</td><td>Los KPIs miden el avance hacia los OKRs</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="exam-q">
+    <div class="q-num">Pregunta 10</div>
+    <div class="q-text">¿Qué es una herramienta CASE y cuándo se implementa? Dar ejemplos.</div>
+    <button class="show-btn" onclick="toggleAnswer(this)">Ver respuesta</button>
+    <div class="answer-box">
+      <p><strong>CASE (Computer-Aided Software Engineering)</strong> son herramientas que automatizan o asisten en las distintas etapas del proceso de desarrollo de software, mejorando la productividad y la calidad.</p>
+      <p><strong>¿Cuándo se implementa?</strong> A lo largo de todo el SDLC, desde la fase de análisis hasta el mantenimiento.</p>
+      <p><strong>Ejemplos por categoría:</strong></p>
+      <ul>
+        <li><strong>Modelado y diseño:</strong> UMLet, StarUML, draw.io (diagramas UML)</li>
+        <li><strong>Generación de código:</strong> GitHub Copilot, Swagger/JHipster</li>
+        <li><strong>Análisis de calidad:</strong> SonarQube, ESLint, Checkstyle</li>
+        <li><strong>Gestión de proyectos:</strong> Jira, Trello, Azure DevOps</li>
+        <li><strong>Control de versiones:</strong> Git + GitHub/GitLab</li>
+        <li><strong>CI/CD y despliegue:</strong> Jenkins, GitHub Actions, Docker</li>
+        <li><strong>Testing:</strong> Selenium, Postman, Appium</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- fin sec-examen -->
+
+
+<!-- ===== MODELOS DE PARCIAL ===== -->
+<div id="sec-parcial" class="section">
+  <div class="tip" style="margin-bottom:1.25rem">🎯 Tres modelos de parcial interactivos. Respondé y chequeá tus respuestas al final de cada modelo.</div>
+
+  <div class="parcial-selector">
+    <button class="parcial-btn active" onclick="showParcial(1)">Modelo 1</button>
+    <button class="parcial-btn" onclick="showParcial(2)">Modelo 2</button>
+    <button class="parcial-btn" onclick="showParcial(3)">Modelo 3</button>
+  </div>
+
+  <!-- MODELO 1 -->
+  <div id="parcial-1" class="parcial active">
+    <div class="parcial-header">
+      <h2>Parcial Modelo 1 — Desarrollo de Software 2026</h2>
+      <p>Nombre: _____________________________ | Fecha: ___/___/2026 | Nota: ____</p>
+    </div>
+    <div class="parcial-body">
+
+      <div class="q-section-title">Sección A — Verdadero o Falso</div>
+
+      <div class="parcial-q" data-correct="V">
+        <div class="q-label">1. El QA (Quality Assurance) se centra en la prevención de defectos durante el proceso de desarrollo.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 1, 1)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 1, 1)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-1-1"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="F">
+        <div class="q-label">2. La arquitectura Monolítica es la más recomendada para sistemas grandes y con muchos usuarios concurrentes.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 1, 2)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 1, 2)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-1-2"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="V">
+        <div class="q-label">3. En TDD (Test Driven Development), se escribe el test ANTES de escribir el código de producción.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 1, 3)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 1, 3)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-1-3"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="F">
+        <div class="q-label">4. Los requerimientos no funcionales describen las funciones específicas que debe realizar el sistema.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 1, 4)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 1, 4)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-1-4"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="V">
+        <div class="q-label">5. El Manifiesto Ágil valora la "respuesta al cambio" por encima de "seguir un plan".</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 1, 5)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 1, 5)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-1-5"></div>
+      </div>
+
+      <div class="q-section-title">Sección B — Opción Múltiple</div>
+
+      <div class="parcial-q" data-correct="B" id="mc-1-6">
+        <div class="q-label">6. ¿Cuál de las siguientes NO es una fase del SDLC (Ciclo de vida del software)?</div>
+        <div class="option" onclick="selectMC(this, 'A', '1-6')"><span class="option-letter">A)</span> Implementación</div>
+        <div class="option" onclick="selectMC(this, 'B', '1-6')"><span class="option-letter">B)</span> Sistemas Legacy</div>
+        <div class="option" onclick="selectMC(this, 'C', '1-6')"><span class="option-letter">C)</span> Pruebas</div>
+        <div class="option" onclick="selectMC(this, 'D', '1-6')"><span class="option-letter">D)</span> Mantenimiento</div>
+        <div class="feedback" id="fb-1-6"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="C" id="mc-1-7">
+        <div class="q-label">7. En Scrum, ¿quién es responsable de gestionar el backlog y prioridades del producto?</div>
+        <div class="option" onclick="selectMC(this, 'A', '1-7')"><span class="option-letter">A)</span> Scrum Master</div>
+        <div class="option" onclick="selectMC(this, 'B', '1-7')"><span class="option-letter">B)</span> Dev Team</div>
+        <div class="option" onclick="selectMC(this, 'C', '1-7')"><span class="option-letter">C)</span> Product Owner</div>
+        <div class="option" onclick="selectMC(this, 'D', '1-7')"><span class="option-letter">D)</span> Project Manager</div>
+        <div class="feedback" id="fb-1-7"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="A" id="mc-1-8">
+        <div class="q-label">8. El principio SOLID "D" (Dependency Inversion) indica que se debe:</div>
+        <div class="option" onclick="selectMC(this, 'A', '1-8')"><span class="option-letter">A)</span> Depender de abstracciones, no de implementaciones concretas.</div>
+        <div class="option" onclick="selectMC(this, 'B', '1-8')"><span class="option-letter">B)</span> Usar muchas interfaces pequeñas en lugar de una general.</div>
+        <div class="option" onclick="selectMC(this, 'C', '1-8')"><span class="option-letter">C)</span> Una clase debe tener una sola razón para cambiar.</div>
+        <div class="option" onclick="selectMC(this, 'D', '1-8')"><span class="option-letter">D)</span> Las subclases deben poder reemplazar a las clases base.</div>
+        <div class="feedback" id="fb-1-8"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="B" id="mc-1-9">
+        <div class="q-label">9. ¿Qué tipo de prueba verifica el comportamiento del sistema sin conocer su código interno?</div>
+        <div class="option" onclick="selectMC(this, 'A', '1-9')"><span class="option-letter">A)</span> Caja Blanca</div>
+        <div class="option" onclick="selectMC(this, 'B', '1-9')"><span class="option-letter">B)</span> Caja Negra</div>
+        <div class="option" onclick="selectMC(this, 'C', '1-9')"><span class="option-letter">C)</span> Prueba Unitaria</div>
+        <div class="option" onclick="selectMC(this, 'D', '1-9')"><span class="option-letter">D)</span> TDD</div>
+        <div class="feedback" id="fb-1-9"></div>
+      </div>
+
+      <div class="q-section-title">Sección C — Definir conceptos</div>
+
+      <div class="parcial-q">
+        <div class="q-label">10. Defina brevemente los siguientes conceptos:</div>
+        <p style="margin-top:8px"><strong>a) Requerimiento Funcional:</strong></p>
+        <textarea style="width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:0.9rem;margin-top:4px;font-family:inherit;resize:vertical" rows="2" placeholder="Escribí tu respuesta..."></textarea>
+        <p style="margin-top:10px"><strong>b) Patrón de diseño Singleton:</strong></p>
+        <textarea style="width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:0.9rem;margin-top:4px;font-family:inherit;resize:vertical" rows="2" placeholder="Escribí tu respuesta..."></textarea>
+        <p style="margin-top:10px"><strong>c) Arquitectura de Microservicios:</strong></p>
+        <textarea style="width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:0.9rem;margin-top:4px;font-family:inherit;resize:vertical" rows="2" placeholder="Escribí tu respuesta..."></textarea>
+        <div style="margin-top:0.75rem;background:#f0f9ff;border-radius:8px;padding:0.75rem;font-size:0.85rem;display:none" id="def-1-key">
+          <strong>Respuestas de referencia:</strong><br>
+          a) Describe una función específica que el sistema debe realizar. Ej: "El usuario puede iniciar sesión con email y contraseña."<br>
+          b) Patrón creacional que garantiza que una clase tenga una sola instancia en toda la aplicación. Ej: logger global, conexión a DB.<br>
+          c) Estilo arquitectónico donde el sistema se divide en servicios pequeños e independientes que se comunican por APIs. Alta escalabilidad y flexibilidad.
+        </div>
+        <button class="show-btn" style="margin-top:8px" onclick="document.getElementById('def-1-key').style.display='block'; this.style.display='none'">Ver respuestas de referencia</button>
+      </div>
+
+      <button class="check-btn" onclick="checkParcial(1)">Verificar respuestas de V/F y Múltiple opción</button>
+      <div class="score-box" id="score-1"></div>
+      <button class="reset-btn" onclick="resetParcial(1)" style="margin-top:8px">Reiniciar modelo</button>
+    </div>
+  </div>
+
+  <!-- MODELO 2 -->
+  <div id="parcial-2" class="parcial">
+    <div class="parcial-header" style="background:#1e3a5f">
+      <h2>Parcial Modelo 2 — Desarrollo de Software 2026</h2>
+      <p>Nombre: _____________________________ | Fecha: ___/___/2026 | Nota: ____</p>
+    </div>
+    <div class="parcial-body">
+
+      <div class="q-section-title">Sección A — Verdadero o Falso</div>
+
+      <div class="parcial-q" data-correct="F">
+        <div class="q-label">1. UML es un lenguaje de programación utilizado para desarrollar software orientado a objetos.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 2, 1)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 2, 1)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-2-1"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="V">
+        <div class="q-label">2. Los OKRs (Objectives & Key Results) combinan objetivos cualitativos con resultados medibles para alcanzarlos.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 2, 2)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 2, 2)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-2-2"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="F">
+        <div class="q-label">3. En XP (Extreme Programming), el Pair Programming significa que dos programadores trabajan en proyectos separados simultáneamente.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 2, 3)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 2, 3)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-2-3"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="V">
+        <div class="q-label">4. En la gestión de riesgos, la etapa de "Análisis" consiste en evaluar la probabilidad e impacto de cada riesgo identificado.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 2, 4)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 2, 4)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-2-4"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="V">
+        <div class="q-label">5. En POO, el Polimorfismo permite que objetos de diferentes clases respondan al mismo mensaje de manera diferente.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 2, 5)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 2, 5)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-2-5"></div>
+      </div>
+
+      <div class="q-section-title">Sección B — Opción Múltiple</div>
+
+      <div class="parcial-q" data-correct="D" id="mc-2-6">
+        <div class="q-label">6. ¿Cuál de los siguientes es un ejemplo de requerimiento NO funcional?</div>
+        <div class="option" onclick="selectMC(this, 'A', '2-6')"><span class="option-letter">A)</span> El usuario puede registrarse con email y contraseña.</div>
+        <div class="option" onclick="selectMC(this, 'B', '2-6')"><span class="option-letter">B)</span> El sistema debe permitir filtrar productos por categoría.</div>
+        <div class="option" onclick="selectMC(this, 'C', '2-6')"><span class="option-letter">C)</span> El administrador puede ver el historial de pedidos.</div>
+        <div class="option" onclick="selectMC(this, 'D', '2-6')"><span class="option-letter">D)</span> El sistema debe responder en menos de 2 segundos.</div>
+        <div class="feedback" id="fb-2-6"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="A" id="mc-2-7">
+        <div class="q-label">7. El patrón de diseño Observer se clasifica como:</div>
+        <div class="option" onclick="selectMC(this, 'A', '2-7')"><span class="option-letter">A)</span> Patrón de Comportamiento</div>
+        <div class="option" onclick="selectMC(this, 'B', '2-7')"><span class="option-letter">B)</span> Patrón Creacional</div>
+        <div class="option" onclick="selectMC(this, 'C', '2-7')"><span class="option-letter">C)</span> Patrón Estructural</div>
+        <div class="option" onclick="selectMC(this, 'D', '2-7')"><span class="option-letter">D)</span> Patrón de Abstracción</div>
+        <div class="feedback" id="fb-2-7"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="C" id="mc-2-8">
+        <div class="q-label">8. El modelo COCOMO sirve para:</div>
+        <div class="option" onclick="selectMC(this, 'A', '2-8')"><span class="option-letter">A)</span> Gestionar el backlog de un proyecto ágil.</div>
+        <div class="option" onclick="selectMC(this, 'B', '2-8')"><span class="option-letter">B)</span> Modelar la arquitectura del sistema en UML.</div>
+        <div class="option" onclick="selectMC(this, 'C', '2-8')"><span class="option-letter">C)</span> Estimar el esfuerzo, costo y tiempo de desarrollo de software.</div>
+        <div class="option" onclick="selectMC(this, 'D', '2-8')"><span class="option-letter">D)</span> Definir los casos de uso de un sistema.</div>
+        <div class="feedback" id="fb-2-8"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="B" id="mc-2-9">
+        <div class="q-label">9. ¿Qué metodología ágil usa un tablero con flujo continuo (sin sprints) y limita el WIP?</div>
+        <div class="option" onclick="selectMC(this, 'A', '2-9')"><span class="option-letter">A)</span> Scrum</div>
+        <div class="option" onclick="selectMC(this, 'B', '2-9')"><span class="option-letter">B)</span> Kanban</div>
+        <div class="option" onclick="selectMC(this, 'C', '2-9')"><span class="option-letter">C)</span> XP</div>
+        <div class="option" onclick="selectMC(this, 'D', '2-9')"><span class="option-letter">D)</span> SAFe</div>
+        <div class="feedback" id="fb-2-9"></div>
+      </div>
+
+      <div class="q-section-title">Sección C — Desarrollo breve</div>
+
+      <div class="parcial-q">
+        <div class="q-label">10. Explique con sus palabras la diferencia entre QA y QC, indicando cuándo actúa cada uno y en qué se enfoca.</div>
+        <textarea style="width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:0.9rem;margin-top:8px;font-family:inherit;resize:vertical" rows="5" placeholder="Escribí tu respuesta..."></textarea>
+        <div style="margin-top:0.75rem;background:#f0f9ff;border-radius:8px;padding:0.75rem;font-size:0.85rem;display:none" id="def-2-key">
+          <strong>Respuesta de referencia:</strong> QA (Quality Assurance) actúa desde el inicio del proyecto, es proactivo y se enfoca en prevenir defectos definiendo estándares y procesos de calidad. QC (Quality Control) actúa cuando el producto está terminado, es reactivo y se enfoca en detectar y corregir defectos en el producto final mediante pruebas y revisiones.
+        </div>
+        <button class="show-btn" style="margin-top:8px" onclick="document.getElementById('def-2-key').style.display='block'; this.style.display='none'">Ver respuesta de referencia</button>
+      </div>
+
+      <div class="parcial-q">
+        <div class="q-label">11. Enunciar y explicar brevemente los 5 principios SOLID.</div>
+        <textarea style="width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:0.9rem;margin-top:8px;font-family:inherit;resize:vertical" rows="6" placeholder="Escribí tu respuesta..."></textarea>
+        <div style="margin-top:0.75rem;background:#f0f9ff;border-radius:8px;padding:0.75rem;font-size:0.85rem;display:none" id="def-2-key2">
+          <strong>S:</strong> Single Responsibility — una clase, una sola razón para cambiar. <strong>O:</strong> Open/Closed — abierto para extensión, cerrado para modificación. <strong>L:</strong> Liskov Substitution — las subclases deben poder reemplazar a sus clases base. <strong>I:</strong> Interface Segregation — muchas interfaces específicas mejor que una general. <strong>D:</strong> Dependency Inversion — depender de abstracciones, no de implementaciones concretas.
+        </div>
+        <button class="show-btn" style="margin-top:8px" onclick="document.getElementById('def-2-key2').style.display='block'; this.style.display='none'">Ver respuesta de referencia</button>
+      </div>
+
+      <button class="check-btn" onclick="checkParcial(2)">Verificar respuestas de V/F y Múltiple opción</button>
+      <div class="score-box" id="score-2"></div>
+      <button class="reset-btn" onclick="resetParcial(2)" style="margin-top:8px">Reiniciar modelo</button>
+    </div>
+  </div>
+
+  <!-- MODELO 3 -->
+  <div id="parcial-3" class="parcial">
+    <div class="parcial-header" style="background:#4a1942">
+      <h2>Parcial Modelo 3 — Desarrollo de Software 2026</h2>
+      <p>Nombre: _____________________________ | Fecha: ___/___/2026 | Nota: ____</p>
+    </div>
+    <div class="parcial-body">
+
+      <div class="q-section-title">Sección A — Verdadero o Falso</div>
+
+      <div class="parcial-q" data-correct="V">
+        <div class="q-label">1. Las herramientas CASE (Computer-Aided Software Engineering) se pueden implementar en todas las etapas del SDLC.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 3, 1)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 3, 1)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-3-1"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="F">
+        <div class="q-label">2. En el modelo Cascada (Waterfall), los requerimientos pueden modificarse en cualquier momento del proyecto sin costo adicional.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 3, 2)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 3, 2)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-3-2"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="V">
+        <div class="q-label">3. Alta cohesión y bajo acoplamiento son características deseables en el diseño de software de calidad.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 3, 3)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 3, 3)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-3-3"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="F">
+        <div class="q-label">4. En Scrum, el Scrum Master es quien define las prioridades del backlog y representa los intereses del cliente.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 3, 4)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 3, 4)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-3-4"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="V">
+        <div class="q-label">5. Un software puede combinar múltiples paradigmas de programación (OOP + Funcional + Declarativo) dentro del mismo proyecto.</div>
+        <div class="tf-options">
+          <button class="tf-btn" onclick="selectTF(this, 'V', 3, 5)">Verdadero</button>
+          <button class="tf-btn" onclick="selectTF(this, 'F', 3, 5)">Falso</button>
+        </div>
+        <div class="feedback" id="fb-3-5"></div>
+      </div>
+
+      <div class="q-section-title">Sección B — Opción Múltiple</div>
+
+      <div class="parcial-q" data-correct="C" id="mc-3-6">
+        <div class="q-label">6. ¿Cuál es la diferencia principal entre los paradigmas Imperativo y Declarativo?</div>
+        <div class="option" onclick="selectMC(this, 'A', '3-6')"><span class="option-letter">A)</span> El imperativo usa objetos, el declarativo usa funciones.</div>
+        <div class="option" onclick="selectMC(this, 'B', '3-6')"><span class="option-letter">B)</span> El imperativo es más moderno y eficiente que el declarativo.</div>
+        <div class="option" onclick="selectMC(this, 'C', '3-6')"><span class="option-letter">C)</span> El imperativo indica CÓMO hacer algo, el declarativo indica QUÉ se quiere lograr.</div>
+        <div class="option" onclick="selectMC(this, 'D', '3-6')"><span class="option-letter">D)</span> El declarativo requiere conocer la estructura interna del sistema.</div>
+        <div class="feedback" id="fb-3-6"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="A" id="mc-3-7">
+        <div class="q-label">7. En el ciclo TDD, ¿cuál es el orden correcto de los pasos?</div>
+        <div class="option" onclick="selectMC(this, 'A', '3-7')"><span class="option-letter">A)</span> RED (test falla) → GREEN (código mínimo) → REFACTOR</div>
+        <div class="option" onclick="selectMC(this, 'B', '3-7')"><span class="option-letter">B)</span> GREEN → RED → REFACTOR</div>
+        <div class="option" onclick="selectMC(this, 'C', '3-7')"><span class="option-letter">C)</span> REFACTOR → RED → GREEN</div>
+        <div class="option" onclick="selectMC(this, 'D', '3-7')"><span class="option-letter">D)</span> Primero se escribe el código, luego el test.</div>
+        <div class="feedback" id="fb-3-7"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="D" id="mc-3-8">
+        <div class="q-label">8. ¿Qué diagrama UML muestra los actores externos y las funcionalidades que el sistema ofrece?</div>
+        <div class="option" onclick="selectMC(this, 'A', '3-8')"><span class="option-letter">A)</span> Diagrama de Clases</div>
+        <div class="option" onclick="selectMC(this, 'B', '3-8')"><span class="option-letter">B)</span> Diagrama de Secuencia</div>
+        <div class="option" onclick="selectMC(this, 'C', '3-8')"><span class="option-letter">C)</span> Diagrama de Estados</div>
+        <div class="option" onclick="selectMC(this, 'D', '3-8')"><span class="option-letter">D)</span> Diagrama de Casos de Uso</div>
+        <div class="feedback" id="fb-3-8"></div>
+      </div>
+
+      <div class="parcial-q" data-correct="B" id="mc-3-9">
+        <div class="q-label">9. El patrón Singleton garantiza que:</div>
+        <div class="option" onclick="selectMC(this, 'A', '3-9')"><span class="option-letter">A)</span> Una clase pueda crear múltiples instancias según la necesidad.</div>
+        <div class="option" onclick="selectMC(this, 'B', '3-9')"><span class="option-letter">B)</span> Una clase tenga una sola instancia en toda la aplicación.</div>
+        <div class="option" onclick="selectMC(this, 'C', '3-9')"><span class="option-letter">C)</span> Dos clases puedan compartir el mismo comportamiento sin herencia.</div>
+        <div class="option" onclick="selectMC(this, 'D', '3-9')"><span class="option-letter">D)</span> Las interfaces se segreguen en partes más pequeñas.</div>
+        <div class="feedback" id="fb-3-9"></div>
+      </div>
+
+      <div class="q-section-title">Sección C — Casos prácticos</div>
+
+      <div class="parcial-q">
+        <div class="q-label">10. Una empresa necesita un sistema que soporte millones de usuarios y permita escalar cada módulo de forma independiente. ¿Qué arquitectura recomendarías y por qué?</div>
+        <textarea style="width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:0.9rem;margin-top:8px;font-family:inherit;resize:vertical" rows="4" placeholder="Escribí tu respuesta..."></textarea>
+        <div style="margin-top:0.75rem;background:#f0f9ff;border-radius:8px;padding:0.75rem;font-size:0.85rem;display:none" id="def-3-key">
+          <strong>Respuesta de referencia:</strong> Se recomendaría la arquitectura de <strong>Microservicios</strong>, ya que permite que cada servicio escale de forma independiente según la demanda, los equipos pueden desarrollar y desplegar cada servicio por separado, y si un servicio falla no afecta al resto del sistema. Ejemplos de empresas que la usan: Netflix, Amazon, Uber.
+        </div>
+        <button class="show-btn" style="margin-top:8px" onclick="document.getElementById('def-3-key').style.display='block'; this.style.display='none'">Ver respuesta de referencia</button>
+      </div>
+
+      <div class="parcial-q">
+        <div class="q-label">11. Escribí una Historia de Usuario para el siguiente caso: "Un banco quiere que sus clientes puedan ver el saldo de su cuenta desde la app móvil."</div>
+        <textarea style="width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-size:0.9rem;margin-top:8px;font-family:inherit;resize:vertical" rows="4" placeholder="Usá el formato: Como [usuario], quiero [acción], para [beneficio]..."></textarea>
+        <div style="margin-top:0.75rem;background:#f0f9ff;border-radius:8px;padding:0.75rem;font-size:0.85rem;display:none" id="def-3-key2">
+          <strong>Respuesta de referencia:</strong> Como <em>cliente del banco</em>, quiero <em>ver el saldo de mi cuenta en la app móvil</em>, para <em>conocer mi disponibilidad económica en cualquier momento sin necesidad de ir a una sucursal</em>. <strong>Criterios de aceptación:</strong> El saldo se actualiza en tiempo real. La información es visible solo para el usuario autenticado. La pantalla carga en menos de 2 segundos.
+        </div>
+        <button class="show-btn" style="margin-top:8px" onclick="document.getElementById('def-3-key2').style.display='block'; this.style.display='none'">Ver respuesta de referencia</button>
+      </div>
+
+      <button class="check-btn" onclick="checkParcial(3)">Verificar respuestas de V/F y Múltiple opción</button>
+      <div class="score-box" id="score-3"></div>
+      <button class="reset-btn" onclick="resetParcial(3)" style="margin-top:8px">Reiniciar modelo</button>
+    </div>
+  </div>
+
+</div><!-- fin sec-parcial -->
+
+</div><!-- fin main -->
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleClase(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.chevron');
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.clase-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.chevron').forEach(c => c.classList.remove('open'));
+  if (!isOpen) { body.classList.add('open'); chevron.classList.add('open'); }
+}
+
+function toggleAnswer(btn) {
+  const box = btn.nextElementSibling;
+  const visible = box.classList.contains('visible');
+  box.classList.toggle('visible');
+  btn.textContent = visible ? 'Ver respuesta' : 'Ocultar respuesta';
+}
+
+function showParcial(n) {
+  document.querySelectorAll('.parcial').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.parcial-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('parcial-' + n).classList.add('active');
+  document.querySelectorAll('.parcial-btn')[n-1].classList.add('active');
+}
+
+const answers = { tf: {}, mc: {} };
+
+function selectTF(btn, val, model, qnum) {
+  const key = model + '-' + qnum;
+  answers.tf[key] = val;
+  const parent = btn.closest('.parcial-q');
+  parent.querySelectorAll('.tf-btn').forEach(b => {
+    b.classList.remove('selected-true', 'selected-false');
+  });
+  btn.classList.add(val === 'V' ? 'selected-true' : 'selected-false');
+}
+
+function selectMC(opt, letter, key) {
+  answers.mc[key] = letter;
+  const parent = opt.closest('.parcial-q');
+  parent.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  opt.classList.add('selected');
+}
+
+const correctTF = {
+  '1-1':'V','1-2':'F','1-3':'V','1-4':'F','1-5':'V',
+  '2-1':'F','2-2':'V','2-3':'F','2-4':'V','2-5':'V',
+  '3-1':'V','3-2':'F','3-3':'V','3-4':'F','3-5':'V'
+};
+const correctMC = {
+  '1-6':'B','1-7':'C','1-8':'A','1-9':'B',
+  '2-6':'D','2-7':'A','2-8':'C','2-9':'B',
+  '3-6':'C','3-7':'A','3-8':'D','3-9':'B'
+};
+
+const feedbackMsgs = {
+  '1-1': 'Correcto. QA es preventivo, actúa desde el inicio.',
+  '1-2': 'Correcto. La monolítica es difícil de escalar. Para escala masiva se prefieren Microservicios.',
+  '1-3': 'Correcto. En TDD primero el test (RED), luego el código mínimo (GREEN), luego refactorizar.',
+  '1-4': 'Correcto. Los no funcionales describen CÓMO debe comportarse (rendimiento, seguridad, etc.), no QUÉ debe hacer.',
+  '1-5': 'Correcto. Es uno de los 4 valores del Manifiesto Ágil de 2001.',
+  '1-6': 'B) Sistemas Legacy no es una fase del SDLC.',
+  '1-7': 'C) El Product Owner gestiona el backlog y representa al cliente.',
+  '1-8': 'A) Dependency Inversion: depender de abstracciones, no de implementaciones.',
+  '1-9': 'B) Caja Negra: sin ver el código, solo entradas y salidas.',
+  '2-1': 'Correcto. UML es un lenguaje de MODELADO, no de programación.',
+  '2-2': 'Correcto. OKR = Objetivo + Key Results medibles.',
+  '2-3': 'Correcto. En Pair Programming, dos devs trabajan JUNTOS en el MISMO código y teclado.',
+  '2-4': 'Correcto. La etapa de Análisis evalúa probabilidad e impacto de cada riesgo.',
+  '2-5': 'Correcto. El Polimorfismo permite que distintas clases respondan al mismo mensaje de forma diferente.',
+  '2-6': 'D) "Responder en menos de 2 segundos" es un atributo de calidad (rendimiento), no una función.',
+  '2-7': 'A) Observer es un patrón de Comportamiento (notifica cuando algo cambia).',
+  '2-8': 'C) COCOMO estima esfuerzo (meses-persona) y tiempo de desarrollo.',
+  '2-9': 'B) Kanban usa flujo continuo, sin sprints, con límite de WIP.',
+  '3-1': 'Correcto. Las herramientas CASE se usan en todas las etapas: modelado, codificación, pruebas, despliegue.',
+  '3-2': 'Correcto. Cascada es rígido; los cambios de requerimientos son costosos y difíciles.',
+  '3-3': 'Correcto. Alta cohesión (módulos bien definidos) + bajo acoplamiento (independientes) = software mantenible.',
+  '3-4': 'Correcto. El Product Owner (no el Scrum Master) define las prioridades y representa al cliente.',
+  '3-5': 'Correcto. Los lenguajes modernos como Python, JS, Kotlin soportan múltiples paradigmas.',
+  '3-6': 'C) Imperativo: CÓMO hacerlo (instrucciones paso a paso). Declarativo: QUÉ se quiere (ej: SQL).',
+  '3-7': 'A) RED (test falla porque no hay código) → GREEN (escribir código mínimo) → REFACTOR (mejorar).',
+  '3-8': 'D) El Diagrama de Casos de Uso muestra actores y las funcionalidades del sistema.',
+  '3-9': 'B) Singleton garantiza UNA sola instancia de una clase en toda la aplicación.',
+};
+
+function checkParcial(model) {
+  let correct = 0; let total = 0;
+
+  for (let q = 1; q <= 5; q++) {
+    const key = model + '-' + q;
+    const fb = document.getElementById('fb-' + key);
+    const parent = fb.closest('.parcial-q');
+    const btns = parent.querySelectorAll('.tf-btn');
+    const userAns = answers.tf[key];
+    const rightAns = correctTF[key];
+    total++;
+    btns.forEach(b => b.classList.remove('correct','wrong'));
+    if (!userAns) { fb.className='feedback show err'; fb.textContent='⚠️ Sin respuesta. Correcta: ' + (rightAns==='V'?'Verdadero':'Falso'); continue; }
+    if (userAns === rightAns) {
+      correct++;
+      fb.className='feedback show ok'; fb.textContent='✓ Correcto! ' + feedbackMsgs[key];
+      btns.forEach(b => { if((b.textContent.trim()==='Verdadero'&&rightAns==='V')||(b.textContent.trim()==='Falso'&&rightAns==='F')) b.classList.add('correct'); });
+    } else {
+      fb.className='feedback show err'; fb.textContent='✗ Incorrecto. ' + feedbackMsgs[key];
+      btns.forEach(b => {
+        if((b.textContent.trim()==='Verdadero'&&userAns==='V')||(b.textContent.trim()==='Falso'&&userAns==='F')) b.classList.add('wrong');
+        if((b.textContent.trim()==='Verdadero'&&rightAns==='V')||(b.textContent.trim()==='Falso'&&rightAns==='F')) b.classList.add('correct');
+      });
+    }
+  }
+
+  for (let q = 6; q <= 9; q++) {
+    const key = model + '-' + q;
+    const fb = document.getElementById('fb-' + key);
+    const parent = document.getElementById('mc-' + key);
+    if (!parent) continue;
+    const opts = parent.querySelectorAll('.option');
+    const userAns = answers.mc[key];
+    const rightAns = correctMC[key];
+    total++;
+    opts.forEach(o => o.classList.remove('correct','wrong'));
+    if (!userAns) { fb.className='feedback show err'; fb.textContent='⚠️ Sin respuesta. Correcta: ' + rightAns + ') ' + feedbackMsgs[key]; continue; }
+    const letters = ['A','B','C','D'];
+    opts.forEach((o,i) => {
+      if (letters[i] === rightAns) o.classList.add('correct');
+      if (letters[i] === userAns && userAns !== rightAns) o.classList.add('wrong');
+    });
+    if (userAns === rightAns) {
+      correct++;
+      fb.className='feedback show ok'; fb.textContent='✓ ' + feedbackMsgs[key];
+    } else {
+      fb.className='feedback show err'; fb.textContent='✗ Incorrecto. ' + feedbackMsgs[key];
+    }
+  }
+
+  const pct = Math.round(correct/total*100);
+  const scoreBox = document.getElementById('score-' + model);
+  scoreBox.classList.add('show');
+  let cls = pct>=70?'score-high':pct>=50?'score-mid':'score-low';
+  scoreBox.className='score-box show '+cls;
+  let emoji = pct>=70?'🎉':pct>=50?'📖':'💪';
+  scoreBox.innerHTML = emoji + ' Resultado: ' + correct + '/' + total + ' correctas (' + pct + '%)';
+  if(pct<70) scoreBox.innerHTML += '<br><small>Repasá las respuestas incorrectas en la sección "Resumen por clase".</small>';
+}
+
+function resetParcial(model) {
+  for(let q=1;q<=5;q++){
+    const key=model+'-'+q;
+    delete answers.tf[key];
+    const fb=document.getElementById('fb-'+key);
+    if(fb){fb.className='feedback';fb.textContent='';}
+    const parent=fb.closest('.parcial-q');
+    parent.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('selected-true','selected-false','correct','wrong'));
+  }
+  for(let q=6;q<=9;q++){
+    const key=model+'-'+q;
+    delete answers.mc[key];
+    const fb=document.getElementById('fb-'+key);
+    if(fb){fb.className='feedback';fb.textContent='';}
+    const parent=document.getElementById('mc-'+key);
+    if(parent) parent.querySelectorAll('.option').forEach(o=>o.classList.remove('selected','correct','wrong'));
+  }
+  const sb=document.getElementById('score-'+model);
+  if(sb){sb.className='score-box';sb.textContent='';}
+}
+</script>
+</body>
+</html>
